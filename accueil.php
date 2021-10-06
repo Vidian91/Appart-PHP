@@ -47,7 +47,7 @@
 
                     <div class="mx-auto text-center">
                         <button class="m-2 btn btn-base"><a href="ajouter-annonce.php">Ajouter une annonce</a></button>
-                        <button class="m-2 btn btn-base"><a href="consulter-annonce.php">Consulter toutes les annonces</a></button>
+                        <button class="m-2 btn btn-base"><a href="consulter-annonces.php">Consulter toutes les annonces</a></button>
                     </div>
                     <br><br>
                 </div><!-- fin col -->
