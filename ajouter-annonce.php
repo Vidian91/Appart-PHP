@@ -13,7 +13,7 @@
 
     <!-- JUMBOTRON -->
     <div class="jumbotron text-center">
-        <h1>Ajouter une annonce</h1>
+        <h1>Ajouter une annonce TEST</h1>
     </div>
 
 <?php 
@@ -51,8 +51,8 @@
         if(empty($contenu)) { // si la variable est vide il n'y a pas d'erreur sur le formulaire
             $advert = executeRequete ( " SELECT * FROM advert WHERE title = :title ", array(':title' => $_POST['title']));
             if ($advert->rowCount() > 0) {
-    //     $contenu .= '<div class="alert alert-dispo text-center">Une annonce avec le même titre existe déjà. Veuillez en choisir un autre</div>';
-    // } else { 
+                $contenu .= '<div class="alert alert-dispo text-center">Une annonce avec le même titre existe déjà. Veuillez en choisir un autre</div>';
+            } else { 
                 $succes = executeRequete( " INSERT INTO advert (title, description, postal_code, city, type, price, reservation_message) VALUES (:title, :description, :postal_code, :city, :type, :price, '') ",
                 array (
                     ':title' => $_POST['title'],
@@ -83,11 +83,13 @@
         
     }//fin if !empty
 
+    //
+    // Il ya des photos à télécharger vers le serveur
+    //
     if ( isset($_FILES) && isset($id_inserted)) {
-    // if ( isset($_FILES) ) {
         /* Enregistrer le fichier téléchargé dans le système de fichiers local */ 
-        // On renomme le fichier téléchargé sous la forme "IDxxx-nom_du_fichier" où xxx = n° de l'annonce (id)
-        jeprint_r($_FILES) ;
+        // On renomme le fichier téléchargé sous la forme "IDxxx-nom_du_fichier" où xxx = n° de l'annonce ($id_inserted)
+        // jeprint_r($_FILES) ;
         $list = $_FILES['photo'] ;
         $nbFiles = count($list['name']) ;
         for ( $i = 0 ; $i < $nbFiles ; $i++) {
