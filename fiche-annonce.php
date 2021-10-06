@@ -39,17 +39,7 @@
 <!doctype html>
 <html lang="fr">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous"> -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <!-- mon style -->
-    <link rel="stylesheet" href="css/style.css">
-
+    <?php require("inc/meta.html") ; ?>
     <title>Produit #<?php echo $fiche['id']; ?></title>
 </head>
 
@@ -75,8 +65,10 @@
                 <div class="card mx-auto" style="width: 50%">
                     <h5 class="card-title text-center"><?php echo $fiche['title']; ?></h5>
             
-                    <div class="card-body d-flex flex-wrap align-items-center">
+                    <!-- <div class="card-body d-flex flex-wrap align-items-center"> -->
+                    <div class="card-body align-items-center">
 
+                <!-- Affichage des photos en Carrousel -->
                     <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-interval="2000" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             <?php 
