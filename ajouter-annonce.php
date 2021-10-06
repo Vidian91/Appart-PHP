@@ -13,7 +13,7 @@
 
     <!-- JUMBOTRON -->
     <div class="jumbotron text-center">
-        <h1>Ajouter une annonce TEST</h1>
+        <h1>Ajouter une annonce</h1>
     </div>
 
 <?php 
