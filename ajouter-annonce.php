@@ -1,57 +1,3 @@
-<?php 
-    require_once('inc/init.php');
-
-    if ( !empty($_POST)) {
-
-        if (!isset($_POST['title']) || strlen($_POST['title']) < 5 ||  strlen($_POST['title']) > 50) {
-            $contenu .="<div class=\"alert alert-dispo\">Le titre doit contenir entre 5 et 50 caractères !</div>"; 
-        } // fin title
-
-        if (!isset($_POST['description']) || strlen($_POST['description']) < 10 ) {
-            $contenu .="<div class=\"alert alert-dispo\">Veuillez décrire votre bien immobilier de façon précise</div>"; 
-        } // fin description
-
-        if (!isset($_POST['postal_code']) || !preg_match( '#^[0-9]{5}$#', $_POST['postal_code']) ) {
-            $contenu .="<div class=\"alert alert-dispo\">Le code postal n'est pas valable</div>"; // est ce que le code postal correspond à l'expression régulière précisée, le regex 'regular rexpression'
-        }// fin code_postal
-
-        if (!isset($_POST['city']) || strlen($_POST['city']) < 1 ||  strlen($_POST['city']) > 20) {
-            $contenu .="<div class=\"alert alert-dispo\">La ville doit contenir entre 1 et 20 caractères !</div>"; 
-        }// fin ville
-
-        if (!isset($_POST['type']) || $_POST['type'] !='location' && $_POST['type'] != 'vente' ) {
-            $contenu .="<div class=\"alert alert-dispo\">Ce type de bien n'est pas valable.</div>";
-        }// fin type
-
-        if(empty($contenu)) { // si la variable est vide il n'y a pas d'erreur sur le formulaire
-            $advert = executeRequete ( " SELECT * FROM advert WHERE title = :title ", array(':title' => $_POST['title']));
-            if ($advert->rowCount() > 0) {
-                $contenu .= '<div class="alert alert-dispo">Ce titre est indisponible veuillez en choisir un autre</div>';
-            } else { 
-                $succes = executeRequete( " INSERT INTO advert (title, description, postal_code, city, type, price, reservation_message) VALUES (:title, :description, :postal_code, :city, :type, :price, '') ",
-                array (
-                    ':title' => $_POST['title'],
-                    ':description' => $_POST['description'],
-                    ':postal_code' => $_POST['postal_code'],
-                    ':city' => $_POST['city'],
-                    ':type' => $_POST['type'],
-                    ':price' => $_POST['price'],
-                    
-                ));
-
-            if ($succes) {
-                $contenu .= '<div class="alert alert-succes">Votre demande a bien été enregistrée, <a href="consulter-annonces.php">cliquez ici pour voir votre bien.</a></div>'; 
-            } else {
-                $contenu .= '<div class="alert alert-dispo">Erreur lors de l`\enregistrement !</div>';
-            }//fin du if if if ($succes)
-
-
-            } // fin du if else => vérification du membre
-        } //fin if(empty($contenu))
-
-        
-    }//fin if !empty
-?> 
 <!doctype html>
 <html lang="fr">
 <head>
@@ -82,6 +28,93 @@
         <h1>Ajouter une annonce</h1>
     </div>
 
+<?php 
+    require_once('inc/init.php');
+
+    // jeprint_r($_POST);
+    // jeprint_r($_GET);
+    // jeprint_r($_FILES);
+
+    if ( !empty($_FILES))
+        $filename = $_FILES['photo']['name'] ;
+
+    if ( !empty($_POST)) {
+
+        if (!isset($_POST['title']) || strlen($_POST['title']) < 5 ||  strlen($_POST['title']) > 50) {
+            $contenu .="<div class=\"alert alert-dispo\">Le titre doit contenir entre 5 et 50 caractères !</div>"; 
+        } // fin title
+
+        if (!isset($_POST['description']) || strlen($_POST['description']) < 10 ) {
+            $contenu .="<div class=\"alert alert-dispo\">Veuillez décrire votre bien immobilier de façon précise</div>"; 
+        } // fin description
+
+        if (!isset($_POST['postal_code']) || !preg_match( '#^[0-9]{5}$#', $_POST['postal_code']) ) {
+            $contenu .="<div class=\"alert alert-dispo\">Le code postal n'est pas valable</div>"; // est ce que le code postal correspond à l'expression régulière précisée, le regex 'regular rexpression'
+        }// fin code_postal
+
+        if (!isset($_POST['city']) || strlen($_POST['city']) < 1 ||  strlen($_POST['city']) > 20) {
+            $contenu .="<div class=\"alert alert-dispo\">La ville doit contenir entre 1 et 20 caractères !</div>"; 
+        }// fin ville
+
+        if (!isset($_POST['type']) || $_POST['type'] !='location' && $_POST['type'] != 'vente' ) {
+            $contenu .="<div class=\"alert alert-dispo\">Ce type de bien n'est pas valable.</div>";
+        }// fin type
+
+        if(empty($contenu)) { // si la variable est vide il n'y a pas d'erreur sur le formulaire
+            $advert = executeRequete ( " SELECT * FROM advert WHERE title = :title ", array(':title' => $_POST['title']));
+            if ($advert->rowCount() > 0) {
+    //     $contenu .= '<div class="alert alert-dispo text-center">Une annonce avec le même titre existe déjà. Veuillez en choisir un autre</div>';
+    // } else { 
+                $succes = executeRequete( " INSERT INTO advert (title, description, postal_code, city, type, price, reservation_message) VALUES (:title, :description, :postal_code, :city, :type, :price, '') ",
+                array (
+                    ':title' => $_POST['title'],
+                    ':description' => $_POST['description'],
+                    ':postal_code' => $_POST['postal_code'],
+                    ':city' => $_POST['city'],
+                    ':type' => $_POST['type'],
+                    ':price' => $_POST['price'],
+                    
+                ));
+
+            if ($succes) {
+                $id_inserted = $pdoBonAppart->lastInsertId() ;
+                $listFiles = "" ;
+                foreach ( $_FILES['photo']['name'] as $file )
+                    $listFiles .= $file . ", " ;
+                $contenu .= "<div class='alert alert-succes text-center'>Votre annonce a bien été enregistrée avec le numéro <b>$id_inserted</b>, 
+                            et les photos <b>$listFiles</b>   
+                            <br><a href='fiche-annonce.php?id=$id_inserted'>cliquez ici pour voir votre bien.</a></div>"; 
+            } else {
+                $contenu .= "<div class='alert alert-dispo'>Erreur lors de l\'enregistrement !</div>";
+            }//fin du if if if ($succes)
+
+
+            } // fin du if else => vérification du membre
+        } //fin if(empty($contenu))
+
+        
+    }//fin if !empty
+
+    if ( isset($_FILES) && isset($id_inserted)) {
+    // if ( isset($_FILES) ) {
+        /* Enregistrer le fichier téléchargé dans le système de fichiers local */ 
+        // On renomme le fichier téléchargé sous la forme "IDxxx-nom_du_fichier" où xxx = n° de l'annonce (id)
+        jeprint_r($_FILES) ;
+        $list = $_FILES['photo'] ;
+        $nbFiles = count($list['name']) ;
+        for ( $i = 0 ; $i < $nbFiles ; $i++) {
+            $filename = "Id" . sprintf("%03d", $id_inserted) . "-" . basename($list['name'][$i]);
+            if ( move_uploaded_file($list['tmp_name'][$i], './upload/' . $filename) ) { 
+                echo "<strong  style='color: green;'> Succès du Téléchargement, renommé en $filename </strong>"; 
+            } else { 
+                echo "<strong  style='color: red;'> Échec </strong>"; 
+            }
+            echo "<br>" ;
+        }
+    }
+?> 
+
+
         <!-- ============================================================== -->
         <!-- Contenu principal -->
         <!-- ============================================================== -->
@@ -95,27 +128,27 @@
                     <?php 
                     echo $contenu;
                     ?> 
-                    <form action="" method="POST" class="w-50 mx-auto">
+                    <form action="" method="POST" class="w-75 mx-auto" enctype="multipart/form-data">
 
                         <div class="frm-group">
                             <label for="title">Titre</label>
-                            <input type="text" class="form-control" id="title" name="title" value="" required>
+                            <input type="text" class="form-control w-100" id="title" name="title" value="" placeholder="Titre de l'annonce..." required>
                         </div>
     ​
                         <div class="fom-group">
                             <label for="description">Description du bien immobilier</label>
-                            <textarea type="text" class="form-control" id="description" name="description" value="" required></textarea>
+                            <textarea type="text" class="form-control w-100" id="description" name="description" value="" placeholder="Description du bien..." required></textarea>
                         </div>
     ​
                         <div class="for-group">
-                            <label for="sexe">Code postal et ville </label>
-                            <input type="text" class="form-control" id="postal_code" name="postal_code" value="" required placeholder="Ici, entrez le code postal de votre bien">
-                            <input type="text" class="form-control" id="city" name="city" value="" required placeholder="Ici, entrez le nom de la ville">
+                            <label for="ville" class="w-100">Code postal et ville </label>
+                            <input type="number" class="fom-control w-25" id="postal_code" name="postal_code" value="" required placeholder="Code postal">
+                            <input type="text" class="for-control w-75" id="city" name="city" value="" required placeholder="Ville">
                         </div>
     ​
                         <div class="form-roup">
                             <label for="type">Type de bien :</label>
-                            <select id="type" class="form-control" name="type">
+                            <select id="type" class="fom-control" name="type">
                                 <option selected>Sélectionnez le type de bien</option>
                                 <option value="vente">Vente</option>
                                 <option value="location">Location</option>
@@ -124,7 +157,12 @@
     ​
                         <div class="form-group">
                             <label for="price">Prix du bien</label>
-                            <input type="text" class="form-control" name="price" id="price" value="">
+                            <input type="number" class="fom-control" name="price" id="price" value="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="photo">Ajouter une photo: </label>
+                            <input type="file" accept="image/png, image/jpeg" name="photo[]" id="photo" multiple >
                         </div>
     ​
                         <button type="submit" class="btn btn-base">Envoyer</button>

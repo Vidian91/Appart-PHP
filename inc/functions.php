@@ -23,4 +23,52 @@
         }
     }// fermeture fonction executeRequete
 
+    // Modifié par Christian Maurence le 31/8/2021
+    // On met le code dans une fonction car appelé depuis au moins 2 pages
+    function tableau_annonces($requete) {
+        echo "<table class=\"table table-striped\">";
+        echo "<thead><tr><th scope=\"col\">#ID</th><th scope=\"col\">Titre</th><th scope=\"col\">Disponibilité</th><th scope=\"col\">Type</th><th scope=\"col\">Prix</th><th scope=\"col\" style=\"width:50px;\">Fiche</th></tr></thead>";
+        while($ligne = $requete->fetch(PDO::FETCH_ASSOC)) {
+            
+            echo "<tr>";
+            echo "<td>#". $ligne['id']. "</td>";  
+
+            $listPhotos = getPhotos($ligne['id']) ;
+            if (count($listPhotos) == 0) 
+                echo "<td><img src='img/interieur.jpg' style='height: 64px'></td>";
+            else 
+                echo "<td><img src='./upload/$listPhotos[0]' style='height: 64px'></td>";
+
+            echo "<td>". strtoupper($ligne['title']) ."</td>"; 
+            if($ligne['reservation_message'] != '') {
+                echo "<td class=\"non-dispo\">INDISPONIBLE</td>"   ;     
+            }else {
+                echo "<td class=\"dispo\">DISPONIBLE</td>";
+            }
+            echo "<td>". $ligne['type']. "</td>";
+            $fmt = new NumberFormatter( 'ru_RU', NumberFormatter::CURRENCY );
+            echo "<td>" .$fmt->formatCurrency($ligne['price'], "EUR"). "</td>";
+            echo "<td><a href=\"fiche-annonce.php?id=".$ligne['id']."\"><button class='btn btn-consult'>Consulter</button></a></td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+    }
+
+    // récupère la liste des photos du répertoire $rep
+    function getPhotos( $id, $rep="./upload") {
+        $listFiles = array() ;
+        $id = "Id" . sprintf("%03d", $id) ;
+        $dir = opendir($rep);
+        while ($file = readdir($dir)) {
+            if($file == "." || $file == "..") continue ;
+            // if( str_starts_with( $file, $id))    // PHP 8
+            if( strstr( $file, $id) ) {
+                // echo "getPhotos -> $id - $rep/$file<br>" ;
+                $listFiles[] = $file ;
+            }
+          }
+        closedir($dir);
+        return $listFiles ;
+      };
+
 ?>

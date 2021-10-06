@@ -41,34 +41,10 @@
                     <h2 class="col-sm-12 text-center" id="">Les annonces du site</h2>
                     <div class="col-sm-12">
                     <?php
-                        
                         $requete = $pdoBonAppart->query("SELECT * FROM advert ORDER BY id DESC");
-                        echo "<table class=\"table table-striped\">";
-                        echo "<thead><tr><th scope=\"col\">ID du bien</th><th scope=\"col\">Titre</th><th scope=\"col\">Disponibilité</th><th scope=\"col\">Type</th><th scope=\"col\">Prix</th><th scope=\"col\" style=\"width:50px;\">Fiche</th></tr></thead>";
-                        while($ligne = $requete->fetch(PDO::FETCH_ASSOC)) {
-                            
-                            echo "<tr>";
-                            echo "<td>#". $ligne['id']. "</td>";  
-                            echo "<td>". strtoupper($ligne['title']) ."</td>"; 
-                            if($ligne['reservation_message'] != '') {
-                                echo "<td class=\"non-dispo\">Ce bien n'est plus disponble à la vente</td>"   ;     
-                            }else {
-                                echo "<td class=\"dispo\">Toujours disponible</td>";
-                            }
-                            echo "<td><a href=\"fiche-annonce.php?id=".$ligne['id']."\">Consulter l'annonce</a></td>";
-                            echo "<td>". $ligne['type']. "</td>";
-                            $fmt = new NumberFormatter( 'ru_RU', NumberFormatter::CURRENCY );
-                            echo "<td>" .$fmt->formatCurrency($ligne['price'], "EUR"). "</td>";
-                            echo "</tr>";
-                        }
-
-                        echo "</table>";
-
+                        tableau_annonces($requete) ;
                     ?>
-            </div><!-- fin col -->
-​
-           
-
+                </div><!-- fin col -->
             </main>
 
     <!-- LE FOOTER EN REQUIRE -->

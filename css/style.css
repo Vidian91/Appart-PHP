@@ -72,3 +72,14 @@ background-color: #c6e4e6;
 border-color: #9dd9db;
 color: #579da0;
 }
+
+/* Ajout CM */
+.btn-consult {
+    /* background-color: red; */
+    background-color: lightslategray;
+    border-radius: 50%;
+    color: gold;
+}
+.btn-consult:hover {
+    background-color: lightsteelblue;
+}

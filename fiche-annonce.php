@@ -3,17 +3,19 @@
 
     if (isset ($_GET['id'])) {
         $resultat = $pdoBonAppart->prepare("SELECT * FROM advert WHERE id = :id");
-        $resultat->execute(array (
-            ':id' => $_GET['id']
-        ));
+        $resultat->execute(array (':id' => $_GET['id'] ));
     
         if($resultat->rowCount() == 0) {
             header('location:consulter-annonces.php');
             exit();
         }
-    
+        $listPhotos = getPhotos($_GET['id']) ;
+        if (count($listPhotos) == 0) $photo = "img/interieur.jpg" ;
+        else $photo = "./upload/" . $listPhotos[0] ;
+        // $id = "Id" . sprintf("%03d", $_GET['id']) ;
+        // echo "id= $id, photo= $photo" ;
         $fiche = $resultat->fetch(PDO::FETCH_ASSOC);
-    }else{
+    } else {
         header('location:consulter-annonces.php');
         exit();
     }
@@ -38,7 +40,7 @@
 <html lang="fr">
 <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
@@ -69,11 +71,19 @@
             <div class="col-sm-12">
                 <h2 class="text-center">Découvrez notre bien : #<?php echo $fiche['id'] ?>!</h2>
 
-                <div class="card mx-auto" style="width: 18rem;">
+                <div class="card mx-auto" style="width: 50%">
+                    <h5 class="card-title text-center"><?php echo $fiche['title']; ?></h5>
             
-                    <div class="card-body">
-                        <h5 class="card-title text-center"><?php echo $fiche['title']; ?></h5>
-                        <img src="img/interieur.jpg" alt="interieur/le bon appart" class="card-img-top">
+                    <div class="card-body d-flex flex-wrap align-items-center">
+                        <?php 
+                        if(count($listPhotos) != 0)
+                            foreach ( $listPhotos as $photo) 
+                                echo "<div class='flex-shrink-1 ms-3'><img  src='./upload/$photo' alt='$photo' ></div>" ;
+                        else
+                            echo "<img src='./$photo' alt='$photo' >" ;
+                        
+                        //   echo "<img src='./upload/$photo' alt='interieur/le bon appart' class='card-img-top'>" ;
+                          ?>
                         <p class="card-text"><?php 
                         echo "<strong>Description</strong> : " .ucfirst($fiche['description']). "<br><strong> Ville</strong> : " .ucfirst($fiche['city']). "<br><strong>Code postal :</strong> " .$fiche['postal_code']. "<br><strong>Type de bien :</strong> ";
                         if($fiche['type'] == 'location') {
