@@ -62,7 +62,8 @@
         while ($file = readdir($dir)) {
             if($file == "." || $file == "..") continue ;
             // if( str_starts_with( $file, $id))    // PHP 8
-            if( strstr( $file, $id) ) {
+            // if( strstr( $file, $id) ) {            // cherche $id n'importe où dans $file
+                if( preg_match( "/^$id/", $file) ) {    // Regex: cherche $id au début de la chaine $file
                 // echo "getPhotos -> $id - $rep/$file<br>" ;
                 $listFiles[] = $file ;
             }
